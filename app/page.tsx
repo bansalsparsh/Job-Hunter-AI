@@ -2,6 +2,7 @@
 
 import { useState, useEffect, ChangeEvent } from 'react';
 import ReactMarkdown from 'react-markdown';
+import { jsPDF } from "jspdf"; // <--- NEW IMPORT
 
 // 1. Define Types
 interface AnalysisResult {
@@ -97,13 +98,37 @@ export default function Home() {
     }
   };
 
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return '#10b981'; // Emerald Green
-    if (score >= 60) return '#f59e0b'; // Amber
-    return '#ef4444'; // Red
+  // --- NEW PDF FUNCTION ---
+  const downloadPDF = () => {
+    if (!result?.cover_letter) return;
+
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 20;
+    const maxLineWidth = pageWidth - (margin * 2);
+    
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+
+    // Split text into lines that fit the page width
+    // We replace markdown symbols to make it look clean in PDF
+    const cleanText = result.cover_letter
+      .replace(/\*\*/g, "") // Remove bold markers
+      .replace(/#/g, "");   // Remove header markers
+
+    const lines = doc.splitTextToSize(cleanText, maxLineWidth);
+    
+    doc.text(lines, margin, 20);
+    doc.save("Cover_Letter.pdf");
   };
 
-  // --- NEW UI RENDER ---
+  const getScoreColor = (score: number) => {
+    if (score >= 80) return '#10b981'; 
+    if (score >= 60) return '#f59e0b'; 
+    return '#ef4444'; 
+  };
+
+  // --- UI RENDER ---
   return (
     <div className="container">
       <header className="header">
@@ -115,7 +140,6 @@ export default function Home() {
         {/* LEFT COLUMN: Inputs & History */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
           
-          {/* Input Card */}
           <div className="card">
             <h2>1. Mission Control</h2>
             
@@ -142,7 +166,6 @@ export default function Home() {
             </button>
           </div>
 
-          {/* History Card (Only shows if history exists) */}
           {history.length > 0 && (
             <div className="card">
               <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px'}}>
@@ -194,7 +217,6 @@ export default function Home() {
 
           {result && (
             <div className="result-area-inner">
-              {/* SCORE BOARD */}
               <div style={{ 
                 marginBottom: '30px', 
                 padding: '25px', 
@@ -209,7 +231,6 @@ export default function Home() {
                     <p style={{ margin: '8px 0', fontSize: '15px', color: '#475569', lineHeight: '1.5' }}>{result.analysis}</p>
                   </div>
                   
-                  {/* The 3D Circle */}
                   <div className="score-circle" style={{ 
                     color: getScoreColor(result.match_score), 
                     border: `5px solid ${getScoreColor(result.match_score)}` 
@@ -218,7 +239,6 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Missing Keywords Chips */}
                 {result.missing_keywords.length > 0 && (
                   <div style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px dashed #cbd5e1' }}>
                     <p style={{ fontWeight: '800', fontSize: '12px', color: '#ef4444', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '10px' }}>⚠️ Missing Keywords Detected:</p>
@@ -241,15 +261,19 @@ export default function Home() {
                 )}
               </div>
 
-              {/* COVER LETTER HEADER */}
+              {/* COVER LETTER HEADER + BUTTONS */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', marginTop: '40px' }}>
                 <h3 style={{fontSize: '1.5rem', margin: 0}}>Tailored Cover Letter</h3>
-                <button onClick={copyToClipboard} className="copy-btn">
-                  {copied ? "✅ COPIED!" : "📋 COPY TEXT"}
-                </button>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <button onClick={downloadPDF} className="copy-btn" style={{ background: '#3b82f6', color: 'white' }}>
+                    ⬇️ Download PDF
+                  </button>
+                  <button onClick={copyToClipboard} className="copy-btn">
+                    {copied ? "✅ Copied!" : "📋 Copy Text"}
+                  </button>
+                </div>
               </div>
               
-              {/* MARKDOWN CONTENT */}
               <div className="markdown-content" style={{ fontSize: '16px', lineHeight: '1.8', color: '#334155' }}>
                 <ReactMarkdown>{result.cover_letter}</ReactMarkdown>
               </div>
