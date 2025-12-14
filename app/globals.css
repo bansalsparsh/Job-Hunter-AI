@@ -1,0 +1,224 @@
+/* app/globals.css */
+:root {
+  --primary: #4f46e5;       /* Indigo */
+  --primary-dark: #3730a3;
+  --accent: #f472b6;        /* Pink */
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.6);
+}
+
+/* 1. ANIMATED GRADIENT BACKGROUND */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--text-main);
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  min-height: 100vh;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+/* 2. HEADER TYPOGRAPHY */
+.header {
+  text-align: center;
+  margin-bottom: 50px;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.header h1 {
+  font-size: 3.5rem;
+  margin-bottom: 10px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.header p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr; /* Right side slightly wider */
+  gap: 40px;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 3. GLASSMORPHISM CARDS */
+.card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 30px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px); /* Subtle lift on hover */
+}
+
+.card h2, .card h3 {
+  margin-top: 0;
+  color: var(--primary);
+  font-weight: 800;
+}
+
+/* 4. CHUNKY 3D BUTTONS */
+.btn-primary {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  font-size: 18px;
+  font-weight: 700;
+  border-radius: 12px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 20px;
+  
+  /* The 3D Magic */
+  box-shadow: 0px 6px 0px var(--primary-dark), 0px 10px 20px rgba(0,0,0,0.2);
+  transition: all 0.1s ease;
+  position: relative;
+  top: 0;
+}
+
+.btn-primary:active:not(:disabled) {
+  top: 6px; /* Moves down physically */
+  box-shadow: 0px 0px 0px var(--primary-dark); /* Shadow disappears */
+}
+
+.btn-primary:disabled {
+  background-color: #94a3b8;
+  box-shadow: none;
+  cursor: not-allowed;
+  top: 0;
+}
+
+/* Inputs & Textareas */
+label {
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 8px;
+  display: block;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+input[type="file"], textarea {
+  width: 90%;
+  padding: 15px;
+  border-radius: 12px;
+  border: 2px solid #e2e8f0;
+  background: rgba(255,255,255,0.8);
+  font-family: inherit;
+  font-size: 15px;
+  transition: border-color 0.2s;
+}
+
+input[type="file"]:hover, textarea:hover {
+  border-color: #cbd5e1;
+}
+
+input[type="file"]:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: white;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+/* 5. ANIMATIONS */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.result-area-inner {
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e2e8f0;
+  border-top: 4px solid var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* Score Circle */
+.score-circle {
+  font-size: 36px;
+  font-weight: 800;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Sidebar History Items */
+.history-item {
+  padding: 15px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.6);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.history-item:hover {
+  background: white;
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border-color: var(--primary);
+}
+
+.copy-btn {
+  background: #eff6ff;
+  color: var(--primary);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.copy-btn:hover { background: #dbeafe; }
+
+/* Markdown Formatting */
+.markdown-content h1, .markdown-content h2 { color: var(--primary); margin-top: 1.5em; }
+.markdown-content ul { padding-left: 20px; }
+.markdown-content li { margin-bottom: 8px; }
